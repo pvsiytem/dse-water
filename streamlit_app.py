@@ -3,7 +3,27 @@ import torch
 import joblib
 import numpy as np
 
-model = torch.load("water_model.pt", map_location=torch.device("cpu"))
+class WaterNet(nn.Module):
+    def __init__(self):
+        super(WaterNet, self).__init__()
+        self.net = nn.Sequential(
+            nn.Linear(3, 64),
+            nn.ReLU(),
+            nn.Linear(64, 32),
+            nn.ReLU(),
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 8),
+            nn.ReLU(),
+            nn.Linear(8, 1)
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+
+model = WaterModel()
+model.load_state_dict(torch.load("water_model.pt", map_location=torch.device("cpu")))
 model.eval()
 
 scaler = joblib.load("scaler.pkl")
