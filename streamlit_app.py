@@ -49,7 +49,7 @@ if st.button("Predict Safe Drinking Water %"):
     with torch.no_grad():
         prediction = model(input_tensor).item()
 
-    st.success(f":crystal_ball: Predicted Safely Managed Drinking Water Access: **{prediction:.2f * 100}%**")
+    st.success(f":crystal_ball: Predicted Safely Managed Drinking Water Access: **{prediction * 100:.2f}%**")
 
 st.markdown("---")
 st.info("Now considers both country and area in predictions. You can expand it further by adding more predictors or visualization!")
