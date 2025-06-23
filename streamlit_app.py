@@ -23,7 +23,7 @@ class WaterNet(nn.Module):
         return self.net(x)
 
 
-model = WaterModel()
+model = WaterNet()
 model.load_state_dict(torch.load("water_model.pt", map_location=torch.device("cpu")))
 model.eval()
 
