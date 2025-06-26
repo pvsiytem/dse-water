@@ -3,11 +3,13 @@ import torch
 import torch.nn as nn
 import joblib
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 st.set_page_config(page_title="Water Access Predictor", page_icon="💧", layout="centered")
 
 st.markdown("<h1 style='text-align: center; color: #0066cc;'>🔮 Water Prediction Tool</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>Estimate the <strong>percentage of population with access to safe drinking water</strong> across Southeast Asia.</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Estimate the <strong>percentage of population with access to safe drinking water</strong> across (most of) Southeast Asia.</p>", unsafe_allow_html=True)
 st.markdown("---")
 
 class WaterNet(nn.Module):
@@ -55,24 +57,43 @@ with st.form("prediction_form"):
 
     submitted = st.form_submit_button("🔍 Predict")
 
-if submitted:
-    with st.spinner("Running model..."):
-        numeric_input = scaler.transform([[year, population, stress]])
-        categorical_input = encoder.transform([[country, area]])
-        full_input = np.hstack([numeric_input, categorical_input])
-        input_tensor = torch.tensor(full_input, dtype=torch.float32)
-
-        with torch.no_grad():
-            prediction = model(input_tensor).item()
-        
-        percent = prediction * 100
-
-    st.success("✅ Prediction Complete!")
-    st.markdown(f"""
-    <div style='text-align: center; padding: 20px; background-color: #add8e6; border-radius: 10px;'>
-        <h2 style='color: #0099ff;'>🌟 Estimated Access to Safe Drinking Water</h2>
-        <p style='font-size: 32px; font-weight: bold;'>{percent:.2f}%</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.caption("Backend: PyTorch + Streamlit")
+    if submitted:
+        with st.spinner("Running model..."):
+            numeric_input = scaler.transform([[year, population, stress]])
+            categorical_input = encoder.transform([[country, area]])
+            full_input = np.hstack([numeric_input, categorical_input])
+            input_tensor = torch.tensor(full_input, dtype=torch.float32)
+    
+            with torch.no_grad():
+                prediction = model(input_tensor).item()
+            
+            percent = prediction * 100
+    
+        st.success("✅ Prediction Complete!")
+        st.markdown(f"""
+        <div style='text-align: center; padding: 20px; background-color: #add8e6; border-radius: 10px;'>
+            <h2 style='color: #0099ff;'>🌟 Estimated Access to Safe Drinking Water</h2>
+            <p style='font-size: 32px; font-weight: bold;'>{percent:.2f}%</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+        years = np.arange(2000, 2051)
+        predictions = []
+        for y in years:
+            num_input = scaler.transform([[y, population, stress]])
+            cat_input = encoder.transform([[country, area]])
+            full_input = np.hstack([num_input, cat_input])
+            input_tensor = torch.tensor(full_input, dtype=torch.float32)
+            with torch.no_grad():
+                pred = model(input_tensor).item()
+            predictions.append(pred * 100)
+    
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.plot(years, predictions, color="#0099ff", linewidth=3, marker='o')
+        ax.set_title("📊 Predicted Access to Safe Drinking Water (2000–2050)", fontsize=16)
+        ax.set_xlabel("Year", fontsize=14)
+        ax.set_ylabel("Access (%)", fontsize=14)
+        ax.grid(True)
+        st.pyplot(fig)
+    
+    st.caption("Backend: PyTorch + Streamlit")
