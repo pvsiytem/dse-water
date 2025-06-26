@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit_lottie import st_lottie
-from streamlit.components.v1 import html
 import requests
 
 def load_lottieurl(url):
@@ -9,28 +8,10 @@ def load_lottieurl(url):
         return None
     return r.json()
 
-st.set_page_config(page_title="Water Prediction App", layout="wide")
-
-lottie_url = "https://lottie.host/a28fc662-6787-4c09-b221-b384aa96f335/dmINnOLGwC.json"
-
-background_lottie_html = f"""
-<div style="position: fixed; width: 100%; height: 100%; z-index: -1; top: 0; left: 0;">
-  <lottie-player
-    src="{lottie_url}"
-    background="transparent"
-    speed="1"
-    loop
-    autoplay
-    style="width: 100%; height: 100%;">
-  </lottie-player>
-</div>
-
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-"""
-
-html(background_lottie_html, height=0, width=0)
+lottie_water = load_lottieurl("https://lottie.host/7ca6f38a-765f-4de0-a698-c52f40c807f5/wCySt5WRIF.json")
 
 st.title(":droplet: Welcome to Water Prediction App!")
+st_lottie(lottie_water, height=300, key="water")
 
 st.markdown("""
 ### 🌍 Predict access to safely managed drinking water from South East Asian countries!
@@ -42,3 +23,4 @@ Use this tool to explore:
 
 Go to the **sidebar** and choose a page to get started!
 """)
+
