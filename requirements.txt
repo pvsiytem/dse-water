@@ -4,4 +4,4 @@ torch
 joblib
 numpy
 streamlit-lottie
-matplotlib
+pandas
