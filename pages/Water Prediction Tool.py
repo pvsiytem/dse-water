@@ -3,8 +3,7 @@ import torch
 import torch.nn as nn
 import joblib
 import numpy as np
-import matplotlib.pyplot as plt
-
+import pandas as pd 
 
 st.set_page_config(page_title="Water Access Predictor", page_icon="💧", layout="centered")
 
@@ -59,16 +58,17 @@ with st.form("prediction_form"):
 
     if submitted:
         with st.spinner("Running model..."):
+            # Predict for selected year
             numeric_input = scaler.transform([[year, population, stress]])
             categorical_input = encoder.transform([[country, area]])
             full_input = np.hstack([numeric_input, categorical_input])
             input_tensor = torch.tensor(full_input, dtype=torch.float32)
-    
+
             with torch.no_grad():
                 prediction = model(input_tensor).item()
-            
+
             percent = prediction * 100
-    
+
         st.success("✅ Prediction Complete!")
         st.markdown(f"""
         <div style='text-align: center; padding: 20px; background-color: #add8e6; border-radius: 10px;'>
@@ -76,7 +76,7 @@ with st.form("prediction_form"):
             <p style='font-size: 32px; font-weight: bold;'>{percent:.2f}%</p>
         </div>
         """, unsafe_allow_html=True)
-    
+
         years = np.arange(2000, 2051)
         predictions = []
         for y in years:
@@ -87,13 +87,13 @@ with st.form("prediction_form"):
             with torch.no_grad():
                 pred = model(input_tensor).item()
             predictions.append(pred * 100)
-    
-        fig, ax = plt.subplots(figsize=(10, 5))
-        ax.plot(years, predictions, color="#0099ff", linewidth=3, marker='o')
-        ax.set_title("📊 Predicted Access to Safe Drinking Water (2000–2050)", fontsize=16)
-        ax.set_xlabel("Year", fontsize=14)
-        ax.set_ylabel("Access (%)", fontsize=14)
-        ax.grid(True)
-        st.pyplot(fig)
-    
-    st.caption("Backend: PyTorch + Streamlit")
+
+        df = pd.DataFrame({
+            "Year": years,
+            f"{country} Access (%)": predictions
+        })
+
+        st.markdown(f"### 📈 Estimated {country}'s {area} Area Access to Safe Drinking Water (2000–2050) with a total population of {population}")
+        st.line_chart(df.set_index("Year"))
+
+st.caption("Backend: PyTorch + Streamlit")
