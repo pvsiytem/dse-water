@@ -1,0 +1,21 @@
+import streamlit as st
+
+st.title("About The App")
+st.markdown("""
+### 🤖 How it works:
+- The app is centered around a custom **neural network** trained on water access and demographic data based on ASEAN safely managed drinking water.
+- Built with **PyTorch**
+- Uses **StandardScaler** for numeric features and **OneHotEncoder** for categories
+
+### 🏗️ Model Architecture:
+- Input Layer → Linear(64) → ReLU
+- Hidden Layers → 32, 16, 8 neurons with ReLU
+- Output Layer → Sigmoid activation (predicts % access)
+
+### 📁 Input Features:
+- **Year**
+- **Population**
+- **Water Stress (%)**
+- **Country**
+- **Area Type**
+""")
