@@ -4,4 +4,3 @@ torch
 joblib
 numpy
 streamlit-lottie
-streamlit.components.v1
