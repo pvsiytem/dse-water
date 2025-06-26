@@ -1,56 +1,25 @@
 import streamlit as st
-import torch
-import torch.nn as nn
-import joblib
-import numpy as np
+from streamlit_lottie import st_lottie
+import requests
 
-class WaterNet(nn.Module):
-    def __init__(self, input_size):
-        super(WaterNet, self).__init__()
-        self.net = nn.Sequential(
-            nn.Linear(input_size, 64),
-            nn.ReLU(),
-            nn.Linear(64, 32),
-            nn.ReLU(),
-            nn.Linear(32, 16),
-            nn.ReLU(),
-            nn.Linear(16, 8),
-            nn.ReLU(),
-            nn.Linear(8, 1),
-            nn.Sigmoid()
-        )
+def load_lottieurl(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
 
-    def forward(self, x):
-        return self.net(x)
+lottie_water = load_lottieurl("https://lottie.host/0dbc0702-9748-46be-981e-13778936d915/NW4ktfpgOr.json")
 
-scaler = joblib.load("scaler.pkl")
-encoder = joblib.load("encoder.pkl")
+st.title(":droplet: Welcome to Water Prediction App!")
+st_lottie(lottie_water, height=300, key="water")
 
-num_features = scaler.mean_.shape[0] + encoder.get_feature_names_out().shape[0]
+st.markdown("""
+### 🌍 Predict access to safely managed drinking water from South East Asian countries!
 
-model = WaterNet(input_size=num_features)
-model.load_state_dict(torch.load("water_model.pt", map_location=torch.device("cpu")))
-model.eval()
+Use this tool to explore:
+- **Predictions** based on population, year, water stress, and more
+- **How the model works**
+- **Data insights** from Southeast Asia based on UNICEF's data
 
-st.title(":droplet: Water Prediction App")
-st.markdown("Predict **Population using Safely Managed Drinking Water Service (%)** based on input data.")
-
-country = st.selectbox("Select Country", ["Indonesia", "Thailand", "Malaysia", "Philippines", "Vietnam", "Laos", "Cambodia", "Singapore", "Myanmar", "Brunei"])
-area = st.selectbox("Area Type", ["Urban", "Rural", "Overall"])
-year = st.number_input("Year", min_value=2000, max_value=2050, value=2025)
-population = st.number_input("Total Population", min_value=1000, step=1000)
-stress = st.number_input("Estimated Water Stress (%)", min_value=0.0, max_value=1.0, value=0.3, step=0.01)
-
-if st.button("Predict Safe Drinking Water %"):
-    numeric_input = scaler.transform([[year, population, stress]])
-    categorical_input = encoder.transform([[country, area]])
-    full_input = np.hstack([numeric_input, categorical_input])
-    input_tensor = torch.tensor(full_input, dtype=torch.float32)
-
-    with torch.no_grad():
-        prediction = model(input_tensor).item()
-
-    st.success(f":crystal_ball: Predicted Safely Managed Drinking Water Access: **{prediction * 100:.2f}%**")
-
-st.markdown("---")
-st.info("Under maintainance")
+Go to the **sidebar** and choose a page to get started!
+""")
