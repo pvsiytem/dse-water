@@ -14,7 +14,6 @@ fun_facts = {
         "🧊 Antarctica holds about 90% of the world’s fresh water as ice.",
         "🌦️ Water can dissolve more substances than any other liquid."
     ], 
-
     "Sea": [
         "🌊 The Mariana Trench is the deepest part of the world's oceans, about 11,000 meters!",
         "🐙 The giant Pacific octopus can have an arm span of up to 16 feet!",
@@ -27,7 +26,6 @@ fun_facts = {
         "🐬 Dolphins call each other by unique names via whistle patterns.",
         "🧜‍♀️ The pressure at the deepest parts of the sea is over 1,000 times the air pressure at sea level."
     ],
-
     "South East Asia": [
         "🇧🇳 Brunei Darussalam is the only absolute monarchy left in Southeast Asia.",
         "🇰🇭 Cambodia is home to the Asian giant softshell turtle and Irrawaddy dolphins.",
@@ -45,7 +43,17 @@ fun_facts = {
 
 st.markdown("### 🎉 Want a fun fact?")
 fact_type = st.selectbox("Choose your category:", ["Water", "Sea", "South East Asia"])
+
+if "fun_fact" not in st.session_state:
+    st.session_state.fun_fact = ""
+
 if st.button("💡 Show me a fun fact!"):
     selected_fact = random.choice(fun_facts[fact_type])
+    st.session_state.fun_fact = selected_fact
     st.toast(selected_fact, icon="📣")
     st.balloons()
+
+st.markdown("---")
+st.markdown("### 📘 Your Fun Fact")
+if st.session_state.fun_fact:
+    st.markdown(f"<div style='font-size: 20px; padding: 10px;'>{st.session_state.fun_fact}</div>", unsafe_allow_html=True)
