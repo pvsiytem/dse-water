@@ -8,7 +8,7 @@ def load_lottieurl(url):
         return None
     return r.json()
 
-lottie_water = load_lottieurl("https://lottie.host/0dbc0702-9748-46be-981e-13778936d915/NW4ktfpgOr.json")
+lottie_water = load_lottieurl("https://lottie.host/a28fc662-6787-4c09-b221-b384aa96f335/dmINnOLGwC.json")
 
 st.title(":droplet: Welcome to Water Prediction App!")
 st_lottie(lottie_water, height=300, key="water")
