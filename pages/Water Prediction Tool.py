@@ -69,7 +69,7 @@ if submitted:
 
     st.success("✅ Prediction Complete!")
     st.markdown(f"""
-    <div style='text-align: center; padding: 20px; background-color: #e6f2ff; border-radius: 10px;'>
+    <div style='text-align: center; padding: 20px; background-color: #add8e6; border-radius: 10px;'>
         <h2 style='color: #0099ff;'>🌟 Estimated Access to Safe Drinking Water</h2>
         <p style='font-size: 32px; font-weight: bold;'>{percent:.2f}%</p>
     </div>
